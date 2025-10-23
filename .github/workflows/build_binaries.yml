@@ -2,21 +2,32 @@ name: Generate release-artifacts
 
 on:
   release:
-    types: 
-        - created
+    types: [created]
+
+permissions:
+  contents: write
+  packages: write
 
 jobs:
-  generate:
-    name: Generate cross-platform builds
+  releases-matrix:
+    name: Release Go Binary
     runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        goos: [linux, windows, darwin]
+        goarch: ["386", amd64, arm64]
+        exclude:
+          - goarch: "386"
+            goos: darwin
+          - goarch: arm64
+            goos: windows
     steps:
-      - name: Checkout the repository
-        uses: actions/checkout@v2
-      - name: Generate build files
-        uses: thatisuday/go-cross-build@v1
+      - uses: actions/checkout@v4
+      - uses: wangyoucao577/go-release-action@v1
         with:
-            platforms: 'linux/amd64, darwin/amd64, windows/amd64'
-            package: 'spacdr'
-            name: 'spacdr'
-            compress: 'true'
-            dest: 'dist'
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          goos: ${{ matrix.goos }}
+          goarch: ${{ matrix.goarch }}
+          project_path: "."
+          pre_command: "go mod tidy"
+          extra_files: LICENSE README.md
