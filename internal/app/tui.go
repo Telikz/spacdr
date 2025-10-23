@@ -14,7 +14,6 @@ type UIModel struct {
 	deck     *domain.Deck
 	current  int
 	flipped  bool
-	rating   bool
 	quitting bool
 	filePath string
 	width    int
@@ -28,7 +27,6 @@ func NewUIModel(deck *domain.Deck, filePath string, svc service.DeckService) *UI
 		deck:     deck,
 		current:  0,
 		flipped:  false,
-		rating:   false,
 		quitting: false,
 		filePath: filePath,
 		svc:      svc,
@@ -45,38 +43,31 @@ func (m *UIModel) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 		m.width = msg.Width
 		m.height = msg.Height
 	case tea.KeyMsg:
-		if m.rating {
-			switch msg.String() {
-			case "1", "2", "3", "4", "5":
-				score := int(msg.String()[0] - '0')
-				m.svc.RateCard(m.deck, m.current, score)
-				err := m.svc.SaveDeck(m.filePath, m.deck)
-				if err != nil {
-					return nil, nil
-				}
-				m.current = m.svc.NextCard(m.deck, m.current)
-				m.rating = false
-				m.flipped = false
-			case "q", "ctrl+c":
-				m.quitting = true
-				return m, tea.Quit
+		switch msg.String() {
+		case "q", "ctrl+c":
+			m.quitting = true
+			return m, tea.Quit
+		case "h", "l":
+			m.flipped = !m.flipped
+		case "j":
+			m.current = m.svc.NextCard(m.deck, m.current)
+			m.flipped = false
+		case "k":
+			m.current = m.svc.PreviousCard(m.current)
+			m.flipped = false
+
+		case "1", "2", "3", "4", "5":
+			score := int(msg.String()[0] - '0')
+			err := m.svc.RateCard(m.deck, m.current, score)
+			if err != nil {
+				return nil, nil
 			}
-		} else {
-			switch msg.String() {
-			case "q", "ctrl+c":
-				m.quitting = true
-				return m, tea.Quit
-			case "h", "l":
-				m.flipped = !m.flipped
-			case "j":
-				m.current = m.svc.NextCard(m.deck, m.current)
-				m.flipped = false
-			case "k":
-				m.current = m.svc.PreviousCard(m.current)
-				m.flipped = false
-			case "r":
-				m.rating = true
+			err = m.svc.SaveDeck(m.filePath, m.deck)
+			if err != nil {
+				return nil, nil
 			}
+			m.current = m.svc.NextCard(m.deck, m.current)
+			m.flipped = false
 		}
 	}
 	return m, nil
@@ -97,67 +88,76 @@ func (m *UIModel) View() string {
 	}
 
 	availableWidth := m.width
-	if availableWidth < 40 {
-		availableWidth = 40
+	if availableWidth < 20 {
+		availableWidth = 20
 	}
 
-	cardPadding := 4
+	cardPadding := availableWidth / 4
 	cardWidth := availableWidth - cardPadding
 
 	headerStyle := lipgloss.NewStyle().
-		Foreground(lipgloss.Color("39")).
 		Bold(true).
-		MarginBottom(1).
 		Align(lipgloss.Center).
-		Width(availableWidth)
+		Width(m.width)
 
 	cardStyle := lipgloss.NewStyle().
-		Border(lipgloss.RoundedBorder()).
-		BorderForeground(lipgloss.Color("63")).
-		Padding(2).
-		MarginTop(1).
-		MarginBottom(2).
+		Border(lipgloss.NormalBorder()).
+		Padding(1).
 		Width(cardWidth).
 		Align(lipgloss.Center)
 
-	contentStyle := lipgloss.NewStyle().
-		Foreground(lipgloss.Color("255"))
+	contentStyle := lipgloss.NewStyle()
 
 	progress := fmt.Sprintf("(%d/%d)", m.current+1, len(m.deck.Cards))
 	scoreStr := ""
 	if card.Score > 0 {
-		scoreStyle := lipgloss.NewStyle().Foreground(lipgloss.Color("226"))
-		scoreStr = " " + scoreStyle.Render(fmt.Sprintf("⭐ %d/5", card.Score))
+		scoreStyle := lipgloss.NewStyle()
+		scoreStr = " " + scoreStyle.Render(fmt.Sprintf(" - %d/5", card.Score))
 	}
 
 	header := headerStyle.Render(fmt.Sprintf("%s  %s%s", m.deck.Name, progress, scoreStr))
 	cardBox := cardStyle.Render(contentStyle.Render(strings.TrimSpace(content)))
 
-	var help string
-	if m.rating {
-		help = "Rate: [1] [2] [3] [4] [5] | [Q] quit"
-	} else {
-		help = "[H/L] flip  |  [J/K] navigate  |  [R] rate  |  [Q] quit"
-	}
+	help := "Rate: [1] [2] [3] [4] [5] \n" + "[H/L] flip  |  [J/K] navigate |  [Q] quit"
 
 	helpStyle := lipgloss.NewStyle().
-		Foreground(lipgloss.Color("243")).
 		Italic(true).
-		MarginTop(1).
 		Align(lipgloss.Center).
-		Width(availableWidth)
+		Width(m.width)
 
-	verticalSpace := m.height - lipgloss.Height(header) - lipgloss.Height(cardBox) - lipgloss.Height(helpStyle.Render(help)) - 4
+	helpText := helpStyle.Render(help)
+	helpHeight := lipgloss.Height(helpText)
+	verticalSpace := m.height - lipgloss.Height(cardBox) - helpHeight - 4
 	if verticalSpace < 0 {
 		verticalSpace = 0
 	}
 
-	spacer := strings.Repeat("\n", verticalSpace/2)
+	topSpacer := strings.Repeat("\n", verticalSpace/2)
+	bottomSpacer := strings.Repeat("\n", verticalSpace/2)
 
-	return lipgloss.JoinVertical(lipgloss.Center,
-		spacer,
+	containerStyle := lipgloss.NewStyle().
+		Width(m.width).
+		Align(lipgloss.Center)
+
+	centeredCard := containerStyle.Render(cardBox)
+
+	middle := lipgloss.JoinVertical(lipgloss.Center,
+		topSpacer,
+		centeredCard,
+		bottomSpacer,
+	)
+
+	mainContent := lipgloss.JoinVertical(lipgloss.Top,
 		header,
-		cardBox,
-		helpStyle.Render(help),
+		middle,
+	)
+
+	helpSpacing := lipgloss.NewStyle().
+		Height(m.height - lipgloss.Height(mainContent) - helpHeight)
+
+	return lipgloss.JoinVertical(lipgloss.Top,
+		mainContent,
+		helpSpacing.Render(""),
+		helpText,
 	)
 }
