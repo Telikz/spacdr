@@ -4,7 +4,7 @@ import (
 	"fmt"
 	"os"
 
-	"cram/cmd"
+	"spacdr/cmd"
 )
 
 func main() {

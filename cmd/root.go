@@ -1,7 +1,7 @@
 package cmd
 
 import (
-	"cram/internal/app"
+	"spacdr/internal/app"
 
 	"github.com/spf13/cobra"
 )
@@ -9,9 +9,9 @@ import (
 var deckPath string
 
 var RootCmd = &cobra.Command{
-	Use:   "cram",
+	Use:   "spacdr",
 	Short: "A flashcard CLI application",
-	Long:  "cram is a command-line flashcard application for studying",
+	Long:  "spacdr is a command-line flashcard application for studying",
 	RunE: func(cmd *cobra.Command, args []string) error {
 		return app.StartStudySession(deckPath)
 	},

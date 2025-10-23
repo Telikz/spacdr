@@ -1,4 +1,4 @@
-# cram
+# spacdr
 
 A terminal-based flashcard application for studying and memorizing. Built with Go and featuring an interactive TUI (Text User Interface) for smooth learning sessions.
 
@@ -22,7 +22,7 @@ A terminal-based flashcard application for studying and memorizing. Built with G
 make build
 ```
 
-This creates an executable called `cram` in the current directory.
+This creates an executable called `spacdr` in the current directory.
 
 
 This loads the default `deck.json` from the current directory.

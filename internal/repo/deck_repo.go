@@ -1,9 +1,9 @@
 package repo
 
 import (
-	"cram/internal/domain"
 	"encoding/json"
 	"os"
+	"spacdr/internal/domain"
 )
 
 type DeckRepository interface {

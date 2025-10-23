@@ -1,9 +1,9 @@
 package app
 
 import (
-	"cram/internal/repo"
-	"cram/internal/service"
 	"fmt"
+	"spacdr/internal/repo"
+	"spacdr/internal/service"
 
 	tea "github.com/charmbracelet/bubbletea"
 )

@@ -1,9 +1,9 @@
 package service
 
 import (
-	"cram/internal/domain"
-	"cram/internal/repo"
 	"sort"
+	"spacdr/internal/domain"
+	"spacdr/internal/repo"
 	"time"
 )
 

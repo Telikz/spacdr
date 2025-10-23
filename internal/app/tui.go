@@ -1,9 +1,9 @@
 package app
 
 import (
-	"cram/internal/domain"
-	"cram/internal/service"
 	"fmt"
+	"spacdr/internal/domain"
+	"spacdr/internal/service"
 	"strings"
 
 	tea "github.com/charmbracelet/bubbletea"

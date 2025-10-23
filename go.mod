@@ -1,4 +1,4 @@
-module cram
+module spacdr
 
 go 1.25.3
 

@@ -1,6 +1,6 @@
 .PHONY: build run test lint clean help
 
-BINARY_NAME=cram
+BINARY_NAME=spacdr
 MAIN_PATH=main.go
 
 help:
