@@ -2,8 +2,8 @@ package service
 
 import (
 	"sort"
-	"spacdr/internal/domain"
-	"spacdr/internal/repo"
+	"github.com/Telikz/spacdr/internal/domain"
+	"github.com/Telikz/spacdr/internal/repo"
 	"time"
 )
 

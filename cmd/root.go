@@ -1,7 +1,7 @@
 package cmd
 
 import (
-	"spacdr/internal/app"
+	"github.com/Telikz/spacdr/internal/app"
 
 	"github.com/spf13/cobra"
 )
