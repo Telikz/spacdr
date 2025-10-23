@@ -2,6 +2,8 @@
 
 A terminal-based flashcard application for studying and memorizing. Built with Go and featuring an interactive TUI (Text User Interface) for smooth learning sessions.
 
+![Screenshot](https://i.imgur.com/e0EYHTU.png)
+
 ## Features
 
 - **Interactive Study Sessions** - Flip through flashcards with keyboard shortcuts
