@@ -1,9 +1,9 @@
 package repo
 
 import (
-	"cram/internal/domain"
 	"os"
 	"path/filepath"
+	"spacdr/internal/domain"
 	"testing"
 	"time"
 )
