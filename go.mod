@@ -1,4 +1,4 @@
-module github.com/Telikz/spacdr
+module github.com/telikz/spacdr
 
 go 1.25.3
 

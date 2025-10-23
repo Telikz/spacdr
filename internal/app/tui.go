@@ -2,8 +2,8 @@ package app
 
 import (
 	"fmt"
-	"github.com/Telikz/spacdr/internal/domain"
-	"github.com/Telikz/spacdr/internal/service"
+	"github.com/telikz/spacdr/internal/domain"
+	"github.com/telikz/spacdr/internal/service"
 	"strings"
 
 	tea "github.com/charmbracelet/bubbletea"

@@ -3,7 +3,7 @@ package repo
 import (
 	"encoding/json"
 	"os"
-	"github.com/Telikz/spacdr/internal/domain"
+	"github.com/telikz/spacdr/internal/domain"
 )
 
 type DeckRepository interface {

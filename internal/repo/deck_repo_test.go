@@ -3,7 +3,7 @@ package repo
 import (
 	"os"
 	"path/filepath"
-	"github.com/Telikz/spacdr/internal/domain"
+	"github.com/telikz/spacdr/internal/domain"
 	"testing"
 	"time"
 )

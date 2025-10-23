@@ -4,7 +4,7 @@ import (
 	"fmt"
 	"os"
 
-	"github.com/Telikz/spacdr/cmd"
+	"github.com/telikz/spacdr/cmd"
 )
 
 func main() {
