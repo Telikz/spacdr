@@ -28,6 +28,9 @@ func InitializeConfig() error {
 		if err := os.MkdirAll(spacdrDir, 0755); err != nil {
 			return err
 		}
+		if err := CreateTutorialDeck(); err != nil {
+			return err
+		}
 	}
 
 	viper.SetConfigType("yaml")
