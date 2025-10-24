@@ -2,9 +2,10 @@ package app
 
 import (
 	"fmt"
+	"strings"
+
 	"github.com/telikz/spacdr/internal/domain"
 	"github.com/telikz/spacdr/internal/service"
-	"strings"
 
 	tea "github.com/charmbracelet/bubbletea"
 	"github.com/charmbracelet/lipgloss"
@@ -20,6 +21,7 @@ type UIModel struct {
 	height   int
 	err      string
 	svc      service.DeckService
+	goBack   bool
 }
 
 func NewUIModel(deck *domain.Deck, filePath string, svc service.DeckService) *UIModel {
@@ -44,6 +46,9 @@ func (m *UIModel) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 		m.height = msg.Height
 	case tea.KeyMsg:
 		switch msg.String() {
+		case "b":
+			m.goBack = true
+			return m, tea.Quit
 		case "q", "ctrl+c":
 			m.quitting = true
 			return m, tea.Quit
@@ -118,7 +123,7 @@ func (m *UIModel) View() string {
 	header := headerStyle.Render(fmt.Sprintf("%s  %s%s", m.deck.Name, progress, scoreStr))
 	cardBox := cardStyle.Render(contentStyle.Render(strings.TrimSpace(content)))
 
-	help := "Rate: [1] [2] [3] [4] [5] \n" + "[H/L] flip  |  [J/K] navigate |  [Q] quit"
+	help := "Rate: [1] [2] [3] [4] [5] \n" + "[H/L] flip  |  [J/K] navigate  |  [B] back"
 
 	helpStyle := lipgloss.NewStyle().
 		Italic(true).

@@ -2,9 +2,10 @@ package service
 
 import (
 	"sort"
+	"time"
+
 	"github.com/telikz/spacdr/internal/domain"
 	"github.com/telikz/spacdr/internal/repo"
-	"time"
 )
 
 type DeckService interface {
